@@ -7,11 +7,18 @@ let canvas = {
     hasInitalized : false
 };
 
-function createCanvas(_id, _dom = document.body, _noneCanvasMsg = 'Your browser does not support HTML5 Canvas.') {
+let onResize = () => {
+    //document.body.style.overflow = 'hidden';
+    //canvas.c.style.height = '500px';
+}
+
+window.addEventListener('resize', () => onResize(), false);
+
+function createCanvas(_id, _node = document.body, _noneCanvasMsg = 'Your browser does not support HTML5 Canvas.') {
     let canvas = document.createElement('canvas');
     canvas.id = _id;
     canvas.innerHTML = _noneCanvasMsg;
-    _dom.appendChild(canvas);
+    _node.appendChild(canvas);
 }
 
 async function getJSON(fileName) {
@@ -29,6 +36,7 @@ function gameInit(_id, _width = 300, _height = 150, _mode = 'fixed') {
     canvas.ctx = canvas.c.getContext('2d');
     canvas.hasInitalized = true;
     changeCanvasSize(_width, _height);
+    changeCanvasMode(_mode);
 }
 
 function gameFinalize(){
@@ -44,13 +52,29 @@ function changeCanvasSize(_width, _height) {
     canvas.c.height = _height;
 }
 
+function changeCanvasMode(_mode) {
+    if (!canvas.hasInitalized) {
+        return;
+    }
+    switch (_mode) {
+        case 'fixed':
+            document.body.removeAttribute('style');
+            onResize = () => {
+
+            };
+            break;
+        case 'fullscreen':
+            document.body.style.overflow = 'hidden';
+            onResize = () => {
+                
+            };
+            break;
+        default :
+            break;
+    }
+}
+
 function changeCanvasBGColor(_color) {
     canvas.backgroundColor = _color;
     canvas.c.style.backgroundColor = _color;
 }
-
-function onResize() {
-    // document.body.style.overflow = 'hidden';
-}
-
-window.addEventListener('resize', () => onResize(), false);
