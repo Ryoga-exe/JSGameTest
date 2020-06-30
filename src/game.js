@@ -39,6 +39,10 @@ function gameInit(_id, _width = 300, _height = 150, _mode = 'fixed') {
     changeCanvasMode(_mode);
 }
 
+function gameLoop() {
+    
+}
+
 function gameFinalize(){
 
 }
@@ -60,7 +64,6 @@ function changeCanvasMode(_mode) {
         case 'fixed':
             document.body.removeAttribute('style');
             onResize = () => {
-
             };
             break;
         case 'fullscreen':
@@ -78,3 +81,52 @@ function changeCanvasBGColor(_color) {
     canvas.backgroundColor = _color;
     canvas.c.style.backgroundColor = _color;
 }
+
+//**---- Keyboard ----**//
+let Keyboard = (function() {
+    // private
+    let   instance = null;
+    const KEY_NUM = 256;
+    let keyStatus = Array(KEY_NUM);
+    keyStatus.fill(false);
+    
+    init = () => {
+        return {
+            update: function() {
+                addEventListener("keyup", e => {
+                    for (i = 0; i < KEY_NUM; i++){
+                        if (e.keyCode == i) keyStatus[i] = false;
+                    }
+                }, false);
+                addEventListener("keydown",  e => {
+                    for (i = 0; i < KEY_NUM; i++){
+                        if (e.keyCode == i){
+                            keyStatus[i] = true;
+                        } 
+                    }
+                });
+            },
+            getIsPressing: function (keyCode) {
+                return keyStatus[keyCode];
+            },
+            getIsReleasing: function (keyCode) {
+                return !keyStatus[keyCode];
+            },
+            getPressingCount: function(keyCode) {
+                
+            },
+            getReleasingCount: function(keyCode) {
+
+            },
+        }
+    }
+    return {
+        // public
+        getInstance: function() {
+            if(instance == null) {
+                instance = init();
+            }
+            return instance;
+        }
+    }
+})();
